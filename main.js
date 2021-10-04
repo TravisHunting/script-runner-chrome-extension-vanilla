@@ -141,12 +141,14 @@ function loadJQuery() {
       chrome.scripting.executeScript(
         {
           target: { tabId: tab.id },
-          files: ["jquery-3.6.0.min.js"]
+          files: ["jquery-3.6.0.min.js", "jquery.validate.min.js"]
         }
         //optional callback
         //,(injectionResults) => myFunction(injectionResults[0].result)
       );
     });
+
+
   }
 
 loadJQuery()
