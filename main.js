@@ -1,5 +1,6 @@
 /*global chrome*/
 
+
 let inputScripts = new Map();
 inputScripts.set("JIRA Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
 inputScripts.set("CC Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
@@ -20,7 +21,7 @@ onboardingScripts.set("Company Details", async function(){$("#CompanyOrCorporati
 onboardingScripts.set("Trust Details", async function(){$("#Trust_Name").val("SalmonFarmer").valid();$("#Superannuation").click(); $("#Superannuation").click();$("#FinancialInstNo").focus().click().change().blur().valid(); $("#FinancialInstNo").focus().click().change().blur().valid(); $("#CharityYes").focus().click().change().blur().valid(); $("#CharityYes").focus().click().change().blur().valid(); $("#RegisteredStreetName").val("Bourke Street").valid(); $("#RegisteredSuburb").val("Melbourne").valid(); $("#RegisteredState").next().find("li[data-key='VIC']").find("a").click().valid(); $("#RegisteredPostCode").val("3000").valid(); $(':hidden[id$=AddressVerified]').val('True').valid();$("#IsSameAs_TrustMailing").focus().click(); $("#NextButton").click(); })
 
 
-function runBookmarkletMap(fn) {
+function runScript(fn) {
     chrome.tabs.query({ active: true }, function (tabs) {
       let tab = tabs[0];
       chrome.scripting.executeScript(
@@ -87,7 +88,7 @@ for (const [key, value] of personalScripts) {
 
     let button = document.createElement('button');
     button.innerHTML = key;
-    button.onclick = runBookmarkletMap.bind(this, value);
+    button.onclick = runScript.bind(this, value);
 
     div = document.createElement('div');
     div.style.padding = "5px";
@@ -110,7 +111,7 @@ for (const [key, value] of onboardingScripts) {
 
     let button = document.createElement('button');
     button.innerHTML = key;
-    button.onclick = runBookmarkletMap.bind(this, value);
+    button.onclick = runScript.bind(this, value);
 
     div = document.createElement('div');
     div.style.padding = "5px";
@@ -119,3 +120,44 @@ for (const [key, value] of onboardingScripts) {
     div.appendChild(button);
     document.getElementById("root").append(div);
 }
+
+
+
+if(typeof jQuery!=='undefined'){
+    console.log('jQuery Loaded');
+}
+else{
+    console.log('not loaded yet');
+}
+
+function test() {
+    console.log("asdasdas")
+}
+
+
+function loadJQuery() {
+    chrome.tabs.query({ active: true }, function (tabs) {
+      let tab = tabs[0];
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tab.id },
+          files: ["jquery-3.6.0.min.js"]
+        }
+        //optional callback
+        //,(injectionResults) => myFunction(injectionResults[0].result)
+      );
+    });
+  }
+
+loadJQuery()
+
+// let button = document.createElement('button');
+// button.innerHTML = "load jqewry";
+// button.onclick = runBookmarkletMap2.bind(this);
+
+// let div = document.createElement('div');
+// div.style.padding = "5px";
+// div.style.backgroundColor = "lightblue";
+
+// div.appendChild(button);
+// document.getElementById("root").append(div);
