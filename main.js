@@ -178,8 +178,9 @@ function finder(inputId, baseURL) {
     chrome.tabs.create({ url: url });
 }
 
-let init = true;
-for (const [key, value] of inputScripts) {
+function buildInputScripts() {
+  let init = true;
+  for (const [key, value] of inputScripts) {
     let div;
     if (init) {
         div = document.createElement('div');
@@ -210,69 +211,58 @@ for (const [key, value] of inputScripts) {
     div.appendChild(button);
     div.appendChild(input);
     document.getElementById("root").append(div);
-}
-
-init = true;
-for (const [key, value] of personalScripts) {
-    let div;
-    if (init) {
-        div = document.createElement('div');
-        div.style.textAlign = "center";
-        div.innerHTML = "Personal Scripts";
-        document.getElementById("root").append(div);
-        init = false;
-    }
-
-    let button = document.createElement('button');
-    button.innerHTML = key;
-    button.onclick = runScript.bind(this, value);
-
-    div = document.createElement('div');
-    div.style.padding = "5px";
-    div.style.backgroundColor = "lightgreen";
-
-    div.appendChild(button);
-    document.getElementById("root").append(div);
-}
-
-buildMiscScripts()
-
-init = true;
-for (const [key, value] of onboardingScripts) {
-    let div;
-    if (init) {
-        div = document.createElement('div');
-        div.style.textAlign = "center";
-        div.innerHTML = "Onboarding Scripts";
-        document.getElementById("root").append(div);
-        init = false;
-    }
-
-    let button = document.createElement('button');
-    button.innerHTML = key;
-    button.onclick = runScript.bind(this, value);
-
-    div = document.createElement('div');
-    div.style.padding = "5px";
-    div.style.backgroundColor = "lightblue";
-
-    div.appendChild(button);
-    document.getElementById("root").append(div);
-}
-
-function loadJQuery() {
-    chrome.tabs.query({ active: true }, function (tabs) {
-      let tab = tabs[0];
-      chrome.scripting.executeScript(
-        {
-          target: { tabId: tab.id },
-          files: ["jquery-3.6.0.min.js", "jquery.validate.min.js"]
-        }
-        //optional callback
-        //,(injectionResults) => myFunction(injectionResults[0].result)
-      );
-    });
   }
+}
+
+function buildPersonalScripts() {
+  init = true;
+  for (const [key, value] of personalScripts) {
+      let div;
+      if (init) {
+          div = document.createElement('div');
+          div.style.textAlign = "center";
+          div.innerHTML = "Personal Scripts";
+          document.getElementById("root").append(div);
+          init = false;
+      }
+  
+      let button = document.createElement('button');
+      button.innerHTML = key;
+      button.onclick = runScript.bind(this, value);
+  
+      div = document.createElement('div');
+      div.style.padding = "5px";
+      div.style.backgroundColor = "lightgreen";
+  
+      div.appendChild(button);
+      document.getElementById("root").append(div);
+  }
+}
+
+function buildOnboardingScripts() {
+  init = true;
+  for (const [key, value] of onboardingScripts) {
+      let div;
+      if (init) {
+          div = document.createElement('div');
+          div.style.textAlign = "center";
+          div.innerHTML = "Onboarding Scripts";
+          document.getElementById("root").append(div);
+          init = false;
+      }
+  
+      let button = document.createElement('button');
+      button.innerHTML = key;
+      button.onclick = runScript.bind(this, value);
+  
+      div = document.createElement('div');
+      div.style.padding = "5px";
+      div.style.backgroundColor = "lightblue";
+  
+      div.appendChild(button);
+      document.getElementById("root").append(div);
+  }
+}
 
 // https://www.w3schools.com/colors/colors_names.asp
 function buildMiscScripts() {
@@ -292,5 +282,24 @@ function buildMiscScripts() {
   div.appendChild(button);
   document.getElementById("root").append(div);
 }
+
+function loadJQuery() {
+  chrome.tabs.query({ active: true }, function (tabs) {
+    let tab = tabs[0];
+    chrome.scripting.executeScript(
+      {
+        target: { tabId: tab.id },
+        files: ["jquery-3.6.0.min.js", "jquery.validate.min.js"]
+      }
+      //optional callback
+      //,(injectionResults) => myFunction(injectionResults[0].result)
+    );
+  });
+}
+
+buildInputScripts()
+buildPersonalScripts()
+buildMiscScripts()
+buildOnboardingScripts()
 
 //loadJQuery()
