@@ -1,28 +1,32 @@
 /*global chrome*/
 
 let inputScripts = new Map();
-//inputScripts.set("JIRA Finder", jiraFinder)
-//inputScripts.set("CC Finder", codeCollabFinder)
 inputScripts.set("JIRA Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
 inputScripts.set("CC Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
 
-let scriptMap = new Map();
-scriptMap.set("test", function(){console.log("firing") })
-scriptMap.set("mana", function(){document.getElementById("input_1").value = "travis.hunting";document.getElementById("input_2").value = "Sivart97"; let input3 = document.getElementById("input_3"); input3.value = "7233"; input3.focus().val(input3.val()); })
-scriptMap.set("enable-scroll", function() { document.body.style.overflow = 'auto'; })
+let personalScripts = new Map();
+// enable-scroll use case:
+// When you load a website that locks you out with a massive ad / paywall and disables scrolling
+// I use an adblocker or devtools to hide the ads/paywall and then re-enable scrolling
+personalScripts.set("enable-scroll", function() { document.body.style.overflow = 'auto'; })
 
-//let scriptMap2 = new Map();
-//scriptMap.set("JIRA Finder2", function() {var id = window.prompt("JIRA ID?"); window.location.href='https://portal.fnz.com/jira/browse/NDC-' + id; })
-//scriptMap2.set("JIRA Finder4", "data:text/html,<script>var id = window.prompt('Review ID?')%0D%0Awindow.location.href=%27https%3A%2F%2Fpecod2.fnz.com%2Fui%23review%3Aid%3D%27+id;</script>")
+let onboardingScripts = new Map()
+onboardingScripts.set("Individual", async function(){$(".entity-wizard-type-individual").click();$("#stage1continue").click();$(".entity-wizard-type-Cash").click();$("#stage2continue").click();$(".entity-wizard-type-noaccount").click();$("#GivenName").val("Pavel").valid();$("#FamilyName").val("Rujzl").valid();$("#Mobile").val("0439295670").valid();$("#ConfirmMobile").val("0439295670").valid();$("#Email").val("pavel.rujzl@fnz.co.nz").valid();$("#ConfirmEmail").val("pavel.rujzl@fnz.co.nz").valid();$("#Submit").click();})
+onboardingScripts.set("Joint", async function(){$(".entity-wizard-type-joint").click();$("#stage1continue").click();$(".entity-wizard-type-applicants2").click();$(".entity-wizard-type-Cash").click();$("#stage2continue").click();$(".entity-wizard-type-noaccount").click();$("#GivenName").val("Pavel").valid();$("#FamilyName").val("Rujzl").valid();$("#Mobile").val("0439295670").valid();$("#ConfirmMobile").val("0439295670").valid();$("#Email").val("pavel.rujzl@fnz.co.nz").valid();$("#ConfirmEmail").val("pavel.rujzl@fnz.co.nz").valid();$("#Submit").click();})
+onboardingScripts.set("Company", async function(){$(".entity-wizard-type-company").click();$("#stage1continue").click();$(".entity-wizard-type-applicants1").click();$("#stage2continue").click();$(".entity-wizard-type-Cash").click();$("#stage2continue").click();$(".entity-wizard-type-noaccount").click();$("#GivenName").val("Pavel").valid();$("#FamilyName").val("Rujzl").valid();$("#Mobile").val("0439295670").valid();$("#ConfirmMobile").val("0439295670").valid();$("#Email").val("pavel.rujzl@fnz.co.nz").valid();$("#ConfirmEmail").val("pavel.rujzl@fnz.co.nz").valid();$("#Submit").click();})
+onboardingScripts.set("SMSF, Trust, or Minor", async function(){$(".entity-wizard-type-trust").click();$("#stage1continue").click();$(".entity-wizard-type-individual-trust").click();$(".entity-wizard-type-applicants1").click();$("#stage2continue").click();$(".entity-wizard-type-Cash").click();$("#stage2continue").click();$(".entity-wizard-type-noaccount").click();$("#GivenName").val("Pavel").valid();$("#FamilyName").val("Rujzl").valid();$("#Mobile").val("0439295670").valid();$("#ConfirmMobile").val("0439295670").valid();$("#Email").val("pavel.rujzl@fnz.co.nz").valid();$("#ConfirmEmail").val("pavel.rujzl@fnz.co.nz").valid();$("#Submit").click();})
+onboardingScripts.set("Personal Details", async function(){ $("#MainTitle").next().find("li[data-key='Captain']").find("a").click().valid(); $("#GivenName").val("Pavel").valid(); $("#MiddleName").val("qqqqqqqqqqqqqqq").valid(); $("#FamilyName").val("Roller").valid(); $("#DateOfBirthDay").next().find("li[data-key='26']").find("a").click().valid(); $("#DateOfBirthMonth").next().find("li[data-key='9']").find("a").click().valid(); $("#DateOfBirthYear").next().find("li[data-key='1985']").find("a").click().valid(); $("#DateOfBirthEditDisplay").val("26/09/1985").valid(); $("#Male").focus().click().change().blur().valid();$("#citizenshipCountryId").next().find("li[data-key='AUS']").find("a").click().valid();$("#OccupationCode").val(223115);$("#OtherName").val("OtherName Test");$("#OccupationCodeDescription").val("Software Designer").valid();$("#TaxResidencyJurisdictionCountry1").next().find("li[data-key='No']").find("a").click().valid();$("#IsSameAs_Mailing").focus().click();$("#HasConsentedTermsAndConditions").focus().click();$("#HasUnderstoodTermsAndConditions").focus().click();$("#Mobile").val("0439295670").valid(); $("#ConfirmMobile").val("0439295670").valid(); $("#Mobile").trigger("change");  $("#Email").val("pavel.rujzl@fnz.co.nz").valid(); $("#ContactMethod").next().find("li[data-key='Email']").find("a").click().valid(); $("#ResidentialStreetNumber").val("500").valid(); $("#ResidentialStreetName").val("Bourke Street").valid(); $("#ResidentialSuburb").val("Melbourne").valid(); $("#ResidentialState").next().find("li[data-key='VIC']").find("a").click().valid(); $("#ResidentialPostCode").val("3000").valid(); $(':hidden[id$=AddressVerified]').val('True').valid(); $("#MoreThan3Years").focus().click().change().blur(); $("#MoreThan3Years").focus().click().change().blur().valid(); $(':hidden[id$=AddressVerified]').val('True').valid(); $(':hidden[id$=AddressVerified]').val('True').valid(); $("#SecurityQuestionID").next().find("li[data-key='1']").find("a").click().valid(); $("#SecurityResponse").val("fluff").valid(); $("#IsSameAs_Mailing").focus().click();$("#IsSameAs_Mailing").focus().click();$("#NextButton").click(); })
+onboardingScripts.set("Company Details", async function(){$("#CompanyOrCorporationId").click();$("#Name").val("Test Company").valid();$("#ABN").val("51824753556").valid();$("#ACN").val("000000019").valid();$("#NatureOfBusiness").val("test").valid();$("#RegisteredStreetName").val("Dingo Street").valid();$("#RegisteredSuburb").val("North Lakes").valid();$("#RegisteredState").next().find("li[data-key='QLD']").find("a").click().valid();$("#RegisteredPostCode").val("4509").valid();$("#IndustryCode").val("012109").valid();$("#IndustryCodeDescription").val("Oat Growing").valid();$("#anzsicDescription").val("Oat Growing").valid();$("#CompanyOrCorporation").focus().click().change().blur();$("#CompanyOrCorporation").focus().click().change().blur().valid();$("#FinancialInstNo").focus().click().change().blur();$("#FinancialInstNo").focus().click().change().blur().valid();$("#PublicYes").focus().click().change().blur();$("#PublicYes").focus().click().change().blur().valid();$("#ForeignCharityYes").focus().click().change().blur();$("#ForeignCharityYes").focus().click().change().blur().valid();$("#TaxPurposeNotSupplied").focus().click().change().blur();$("#TaxPurposeNotSupplied").focus().click().change().blur().valid();$("#IsSameAs_Physical").focus().click().change().blur();$("#IsSameAs_CompanyMailing").focus().click().change().blur();$("#NextButton").click();})
+onboardingScripts.set("Trust Details", async function(){$("#Trust_Name").val("SalmonFarmer").valid();$("#Superannuation").click(); $("#Superannuation").click();$("#FinancialInstNo").focus().click().change().blur().valid(); $("#FinancialInstNo").focus().click().change().blur().valid(); $("#CharityYes").focus().click().change().blur().valid(); $("#CharityYes").focus().click().change().blur().valid(); $("#RegisteredStreetName").val("Bourke Street").valid(); $("#RegisteredSuburb").val("Melbourne").valid(); $("#RegisteredState").next().find("li[data-key='VIC']").find("a").click().valid(); $("#RegisteredPostCode").val("3000").valid(); $(':hidden[id$=AddressVerified]').val('True').valid();$("#IsSameAs_TrustMailing").focus().click(); $("#NextButton").click(); })
 
 
-function runBookmarkletMap(arg) {
+function runBookmarkletMap(fn) {
     chrome.tabs.query({ active: true }, function (tabs) {
       let tab = tabs[0];
       chrome.scripting.executeScript(
         {
           target: { tabId: tab.id },
-          function: scriptMap.get(arg)
+          function: fn
         }
         //optional callback
         //,(injectionResults) => myFunction(injectionResults[0].result)
@@ -30,29 +34,27 @@ function runBookmarkletMap(arg) {
     });
   }
 
-// function jiraFinder(inputId) {
-//     let id = document.getElementById(inputId).value;
-//     let url = "https://portal.fnz.com/jira/browse/NDC-" + id;
-//     chrome.tabs.create({ url: url });
-// }
-
-// function codeCollabFinder(inputId) {
-//     let id = document.getElementById(inputId).value;
-//     let url = "https://pecod2.fnz.com/ui#review:id=" + id;
-//     chrome.tabs.create({ url: url });
-// }
-
 function finder(inputId, baseURL) {
     let id = document.getElementById(inputId).value;
     let url = baseURL + id;
     chrome.tabs.create({ url: url });
 }
 
+let init = true;
 for (const [key, value] of inputScripts) {
+    let div;
+    if (init) {
+        div = document.createElement('div');
+        div.style.textAlign = "center";
+        div.innerHTML = "Issue Searching";
+        document.getElementById("root").append(div);
+        init = false;
+    }
 
-    let div = document.createElement('div');
+    div = document.createElement('div');
     div.style.textAlign = "center";
     div.style.padding = "5px";
+    div.style.backgroundColor = "lightgrey";
 
     let button = document.createElement('button');
     button.innerHTML = key;
@@ -72,98 +74,48 @@ for (const [key, value] of inputScripts) {
     document.getElementById("root").append(div);
 }
 
-// for (const [key, value] of inputScripts) {
-
-//     let div = document.createElement('div');
-//     div.style.textAlign = "center";
-//     div.style.padding = "5px";
-
-//     let button = document.createElement('button');
-//     button.innerHTML = key;
-//     button.onclick = value.bind(this, key);
-
-//     let input = document.createElement('input')
-//     input.id = key;
-//     input.type = "text";
-//     input.addEventListener('keypress', function(e) {
-//         if (e.key === 'Enter') {
-//             value(key)
-//         }
-//     })
-
-//     div.appendChild(button);
-//     div.appendChild(input);
-//     document.getElementById("root").append(div);
-// }
-
-for (const [key, value] of scriptMap) {
+init = true;
+for (const [key, value] of personalScripts) {
+    let div;
+    if (init) {
+        div = document.createElement('div');
+        div.style.textAlign = "center";
+        div.innerHTML = "Personal Scripts";
+        document.getElementById("root").append(div);
+        init = false;
+    }
 
     let button = document.createElement('button');
     button.innerHTML = key;
-    button.onclick = runBookmarkletMap.bind(this, key);
+    button.onclick = runBookmarkletMap.bind(this, value);
 
-    let div = document.createElement('div');
-    div.style.textAlign = "center";
+    div = document.createElement('div');
     div.style.padding = "5px";
+    div.style.backgroundColor = "lightgreen";
 
     div.appendChild(button);
     document.getElementById("root").append(div);
 }
 
-// for (const [key, value] of scriptMap2) {
+init = true;
+for (const [key, value] of onboardingScripts) {
+    let div;
+    if (init) {
+        div = document.createElement('div');
+        div.style.textAlign = "center";
+        div.innerHTML = "Onboarding Scripts";
+        document.getElementById("root").append(div);
+        init = false;
+    }
 
-//     let button = document.createElement('button');
-//     button.innerHTML = key;
-//     button.onclick = eval(scriptMap2.get(key)).bind(this, key);
-//     //button.onclick = eval(scriptMap2.get(key));
+    let button = document.createElement('button');
+    button.innerHTML = key;
+    button.onclick = runBookmarkletMap.bind(this, value);
 
-//     let div = document.createElement('div');
-//     div.style.textAlign = "center";
-//     div.style.padding = "5px";
+    div = document.createElement('div');
+    div.style.padding = "5px";
+    div.style.backgroundColor = "lightblue";
 
-//     div.appendChild(button);
-//     document.getElementById("root").append(div);
-// }
-
-// function jiraFinder2() {
-//     let id = document.getElementById("jiraFinder").value;
-//     let url = "https://portal.fnz.com/jira/browse/NDC-" + id;
-//     chrome.tabs.create({ url: url });
-// }
-
-
-
-
-// let button = document.createElement('button');
-// button.innerHTML = "Jira Finder";
-// // opens in same tab
-// // button.onclick = chrome.tabs.update.bind(this, {
-// //     url: "http://www.example.com/"
-// // });
-
-// // opens in new tab
-// //button.onclick = chrome.tabs.create.bind(this, { url: "http://www.example.com/" });
-
-
-// button.onclick = jiraFinder.bind(this);
-
-
-// let div = document.createElement('div');
-// div.style.textAlign = "center";
-// div.style.padding = "5px";
-
-// div.appendChild(button);
-// document.getElementById("root").append(div);
-
-// let input = document.createElement('input')
-// input.id = "jiraFinder";
-// input.type = "text";
-
-// div = document.createElement('div');
-// div.style.textAlign = "center";
-// div.style.padding = "5px";
-
-// div.appendChild(input);
-
-// document.getElementById("root").append(div)
-
+    div.appendChild(button);
+    document.getElementById("root").append(div);
+}
