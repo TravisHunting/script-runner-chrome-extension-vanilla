@@ -175,7 +175,10 @@ function runScript(fn) {
 function finder(inputId, baseURL) {
     let id = document.getElementById(inputId).value;
     let url = baseURL + id;
+    // opens in new tab
     chrome.tabs.create({ url: url });
+    // opens in same tab
+    // chrome.tabs.update({ url: url });
 }
 
 function buildInputScripts() {
