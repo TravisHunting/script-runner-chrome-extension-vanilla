@@ -249,7 +249,7 @@ function buildOnboardingScripts() {
       if (init) {
           div = document.createElement('div');
           div.style.textAlign = "center";
-          div.innerHTML = "Onboarding Scripts";
+          div.innerHTML = "Onboarding Scripts (jQuery)";
           document.getElementById("root").append(div);
           init = false;
       }
