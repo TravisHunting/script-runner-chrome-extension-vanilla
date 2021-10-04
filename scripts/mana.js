@@ -1,0 +1,1 @@
+javascript:(function(){document.getElementById("input_1").value = "travis.hunting";document.getElementById("input_2").value = "Sivart97"; let input3 = document.getElementById("input_3"); input3.value = "7233"; input3.focus().val(input3.val()); })()

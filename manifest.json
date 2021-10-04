@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+
+  "name": "Handy Script Runner",
+  "description": "This extension stores and runs your scripts and bookmarklets",
+  "version": "0.0.1",
+
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open script repo"
+  },
+  "icons": {
+    "16": "infinity225x225.png",
+    "48": "infinity225x225.png",
+    "128": "infinity225x225.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ]
+}
