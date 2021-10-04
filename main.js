@@ -2,7 +2,7 @@
 
 let inputScripts = new Map();
 inputScripts.set("JIRA Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
-inputScripts.set("CC Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
+inputScripts.set("CC Finder", {func: finder, url: "https://pecod2.fnz.com/ui#review:id="})
 
 let personalScripts = new Map();
 // enable-scroll use case:
