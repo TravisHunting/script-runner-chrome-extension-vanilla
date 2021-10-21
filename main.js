@@ -1,8 +1,8 @@
 /*global chrome*/
 
-let inputScripts = new Map();
-inputScripts.set("JIRA Finder", {func: finder, url: "https://portal.fnz.com/jira/browse/NDC-"})
-inputScripts.set("CC Finder", {func: finder, url: "https://pecod2.fnz.com/ui#review:id="})
+
+// Add a reference popup with ACT Driver's license, TFN number, ABN, ACN
+// Add a function to log you out of the site with a radio button for Dev1 and Test1
 
 let personalScripts = new Map();
 // enable-scroll use case:
@@ -13,6 +13,9 @@ personalScripts.set("enable-scroll", function() { document.body.style.overflow =
 let miscScripts = new Map();
 miscScripts.set("Load jQuery", loadJQuery)
 
+// Due to sandboxing/security constraints (I think), you can't access a page's jQuery functions from a chrome extension
+// To get around this you need to inject jQuery using the 'loadjQuery' function
+// Ideally I would have re-written the onboarding scripts to not need jQuery, but that was too much effort
 let onboardingScripts = new Map()
 onboardingScripts.set("Individual", async function() {
   $(".entity-wizard-type-individual").click();
@@ -20,12 +23,12 @@ onboardingScripts.set("Individual", async function() {
   $(".entity-wizard-type-Cash").click();
   $("#stage2continue")[0].click();
   $(".entity-wizard-type-noaccount").click();
-  $("#GivenName").val("Pavel").valid();
+  $("#GivenName").val("RAFLAGTEST").valid();
   $("#FamilyName").val("Rujzl").valid();
   $("#Mobile").val("0439295670").valid();
   $("#ConfirmMobile").val("0439295670").valid();
-  $("#Email").val("pavel.rujzl@fnz.co.nz").valid();
-  $("#ConfirmEmail").val("pavel.rujzl@fnz.co.nz").valid();
+  $("#Email").val("travis.hunting@fnz.com").valid();
+  $("#ConfirmEmail").val("travis.hunting@fnz.com").valid();
   $("#Submit")[0].click();
 })
 onboardingScripts.set("Joint", async function() {
@@ -78,8 +81,8 @@ onboardingScripts.set("SMSF, Trust, or Minor", async function() {
 })
 onboardingScripts.set("Personal Details", async function() { 
   $("#MainTitle").val("Captain").valid();
-  $("#GivenName").val("Pavel").valid(); 
-  $("#MiddleName").val("qqqqqqqqqqqqqqq").valid(); 
+  $("#GivenName").val("RAFLAGTEST").valid(); 
+  $("#MiddleName").val("ppppppppppppppp").valid(); 
   $("#FamilyName").val("Roller").valid(); 
   $("#DateOfBirthDay").val("26").valid(); 
   $("#DateOfBirthMonth").val("9").valid(); 
@@ -97,7 +100,7 @@ onboardingScripts.set("Personal Details", async function() {
   $("#Mobile").val("0439295670").valid(); 
   $("#ConfirmMobile").val("0439295670").valid(); 
   $("#Mobile").trigger("change");  
-  $("#Email").val("pavel.rujzl@fnz.co.nz").valid(); 
+  $("#Email").val("travis.hunting@fnz.com").valid(); 
   $("#ContactMethod").val("Email").valid(); 
   $("#ResidentialStreetNumber").val("500").valid(); 
   $("#ResidentialStreetName").val("Bourke Street").valid(); 
@@ -170,51 +173,201 @@ function runScript(fn) {
         //,(injectionResults) => myFunction(injectionResults[0].result)
       );
     });
-  }
+}
 
-function finder(inputId, baseURL) {
-    let id = document.getElementById(inputId).value;
-    let url = baseURL + id;
+function jiraFinder() {
+    let id = document.getElementById("JIRA Finder").value;
+    let type; let urlBase;
+    if (document.getElementById("infraRadio").checked) {
+      type = "INFRASTRUCTURE";
+      urlBase = "https://wiki.fnz.com/jira/browse/";
+      
+    } else if (document.getElementById("ndcRadio").checked) {
+      type = "NDC";
+      urlBase = "https://portal.fnz.com/jira/browse/";
+    } else { // default
+      type = "NDC";
+      urlBase = "https://portal.fnz.com/jira/browse/";
+    }
+    let url = urlBase + type + "-" + id;
     // opens in new tab
     chrome.tabs.create({ url: url });
     // opens in same tab
     // chrome.tabs.update({ url: url });
 }
 
-function buildInputScripts() {
-  let init = true;
-  for (const [key, value] of inputScripts) {
-    let div;
-    if (init) {
-        div = document.createElement('div');
-        div.style.textAlign = "center";
-        div.innerHTML = "Issue Searching";
-        document.getElementById("root").append(div);
-        init = false;
-    }
+function ccFinder() {
+  let id = document.getElementById("CC Finder").value;
+  let url = "https://pecod2.fnz.com/ui#review:id=" + id;
+  // opens in new tab
+  chrome.tabs.create({ url: url });
+  // opens in same tab
+  // chrome.tabs.update({ url: url });
+}
 
-    div = document.createElement('div');
-    div.style.textAlign = "center";
-    div.style.padding = "5px";
-    div.style.backgroundColor = "lightgrey";
+function personalDetailsFinder() {
+  let id = document.getElementById("Personal Details Finder").value;
+  let urlBase;
+  let urlSuffix = "&tpid=WSRP_c8cac83b__f447__42cc__b449__dbc7b5cb86fb";
+  if (document.getElementById("test0Radio").checked) {
+    urlBase = "http://test0.nabtradedev.com.au:9080/personal-space?prm=selectedPersonalSpaceTab=PersonalDetails&cid=1_";
+  } else if (document.getElementById("test1Radio").checked) {
+    urlBase = "https://test1.nabtradedev.com.au/personal-space?prm=selectedPersonalSpaceTab=PersonalDetails&cid=1_";
+  } else { // default test0
+    urlBase = "http://test0.nabtradedev.com.au:9080/personal-space?prm=selectedPersonalSpaceTab=PersonalDetails&cid=1_";
+  }
+  let url = urlBase + id + urlSuffix;
+  // opens in new tab
+  chrome.tabs.create({ url: url });
+  // opens in same tab
+  // chrome.tabs.update({ url: url });
+}
 
+function buildFinders() {
+  // Title
+  let div = document.createElement('div');
+  div.style.textAlign = "center";
+  div.innerHTML = "Issue Searching";
+  document.getElementById("root").append(div);
+
+  // Grey Background
+  div = document.createElement('div');
+  div.style.textAlign = "center";
+  div.style.padding = "5px";
+  div.style.backgroundColor = "lightgrey";
+  div.id = "finderDiv"
+  document.getElementById("root").append(div);
+
+  buildJiraFinder();
+  buildCCFinder();
+  buildPersonalDetailsFinder();
+}
+
+function buildJiraFinder() {
+    let div = document.getElementById("finderDiv");
+
+    // Jira Finder Search Button
     let button = document.createElement('button');
-    button.innerHTML = key;
-    button.onclick = value.func.bind(this, key, value.url);
+    button.innerHTML = "JIRA Finder";
+    button.onclick = jiraFinder.bind(this);
+    div.appendChild(button);
 
+    // Jira ID input box
     let input = document.createElement('input')
-    input.id = key;
+    input.id = "JIRA Finder";
     input.type = "text";
     input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            value.func(key, value.url)
+          jiraFinder();
         }
     })
-
-    div.appendChild(button);
     div.appendChild(input);
-    document.getElementById("root").append(div);
-  }
+    
+    // Jira Radio Buttons
+    let radioButton; let label;
+
+    radioButton = document.createElement("INPUT");
+    radioButton.setAttribute("type", "radio");
+    radioButton.id = "infraRadio";
+    radioButton.name = "jiraEnv";
+    div.appendChild(radioButton);
+    label = document.createElement("Label");
+    label.setAttribute("for","infraRadio");
+    label.innerHTML = "Infra";
+    div.appendChild(label);
+
+    radioButton = document.createElement("INPUT");
+    radioButton.setAttribute("type", "radio");
+    radioButton.id = "ndcRadio";
+    radioButton.name = "jiraEnv";
+    div.appendChild(radioButton);
+    label = document.createElement("Label");
+    label.setAttribute("for","ndcRadio");
+    label.innerHTML = "NDC (default)";
+    div.appendChild(label);
+
+    // Line breaks, annoying
+    let br = document.createElement("br");
+    div.appendChild(br);
+    br = document.createElement("br")
+    div.appendChild(br);
+}
+
+function buildCCFinder() {
+  let div = document.getElementById("finderDiv");
+
+  // CC Finder Search Button
+  let button = document.createElement('button');
+  button.innerHTML = "CC Finder";
+  button.onclick = ccFinder.bind(this);
+  div.appendChild(button);
+
+  // CC ID input box
+  let input = document.createElement('input')
+  input.id = "CC Finder";
+  input.type = "text";
+  input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        ccFinder();
+      }
+  })
+  div.appendChild(input);
+
+  // Line breaks, annoying
+  let br = document.createElement("br");
+  div.appendChild(br);
+  br = document.createElement("br")
+  div.appendChild(br);
+}
+
+function buildPersonalDetailsFinder() {
+  let div = document.getElementById("finderDiv");
+
+  // Personal Details Search Button
+  let button = document.createElement('button');
+  button.innerHTML = "UserID -> Personal Details";
+  button.onclick = personalDetailsFinder.bind(this);
+  div.appendChild(button);
+
+  // User ID input box
+  let input = document.createElement('input')
+  input.id = "Personal Details Finder";
+  input.type = "text";
+  input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        personalDetailsFinder();
+      }
+  })
+  div.appendChild(input);
+  
+  // Environment Radio Buttons
+  let radioButton; let label;
+
+  radioButton = document.createElement("INPUT");
+  radioButton.setAttribute("type", "radio");
+  radioButton.id = "test1Radio";
+  radioButton.name = "devEnv";
+  div.appendChild(radioButton);
+  label = document.createElement("Label");
+  label.setAttribute("for","test1Radio");
+  label.innerHTML = "Test1";
+  div.appendChild(label);
+
+  radioButton = document.createElement("INPUT");
+  radioButton.setAttribute("type", "radio");
+  radioButton.id = "test0Radio";
+  radioButton.name = "devEnv";
+  div.appendChild(radioButton);
+  label = document.createElement("Label");
+  label.setAttribute("for","test0Radio");
+  label.innerHTML = "Test0 (default)";
+  div.appendChild(label);
+
+  // Line breaks, annoying
+  let br = document.createElement("br");
+  div.appendChild(br);
+  br = document.createElement("br")
+  div.appendChild(br);
 }
 
 function buildPersonalScripts() {
@@ -249,7 +402,7 @@ function buildOnboardingScripts() {
       if (init) {
           div = document.createElement('div');
           div.style.textAlign = "center";
-          div.innerHTML = "Onboarding Scripts (jQuery)";
+          div.innerHTML = "Onboarding Scripts <br/> (must load jQuery to use)";
           document.getElementById("root").append(div);
           init = false;
       }
@@ -300,7 +453,7 @@ function loadJQuery() {
   });
 }
 
-buildInputScripts()
+buildFinders();
 buildPersonalScripts()
 buildMiscScripts()
 buildOnboardingScripts()
